@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Clon visual e interactivo de Spotify con buscador, planes Premium, biblioteca y reproductor. Proyecto académico de Taller de Programación."
+    />
+    <title>Spotify Clone — Proyecto académico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231db954'%3E%3Ccircle cx='8' cy='8' r='8'/%3E%3C/svg%3E"
+    />
+  </head>
+
+  <body class="flex h-[100dvh] flex-col bg-black text-white">
+    <!-- =========================================================== -->
+    <!-- Global header: logo, inicio, buscador y cuenta               -->
+    <!-- =========================================================== -->
+    <header
+      id="app-header"
+      class="app-header flex h-14 shrink-0 items-center gap-2 px-3 sm:px-4"
+    >
+      <a
+        href="#/"
+        class="flex shrink-0 items-center gap-2 text-white"
+        aria-label="Spotify Clone, ir al inicio"
+      >
+        <span class="block h-8 w-8 text-[28px] text-white"><span data-icon="logo"></span></span>
+        <span class="hidden text-[20px] font-black tracking-tight xl:inline" aria-hidden="true"
+          >Spotify<span class="text-spotify">.</span></span
+        >
+      </a>
+
+      <!-- Inicio -->
+      <a
+        href="#/"
+        data-nav="home"
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-subtle transition-colors duration-200 hover:bg-white/[0.14] hover:text-white"
+        title="Inicio"
+        aria-label="Inicio"
+      >
+        <span class="text-[24px]" data-icon="home"></span>
+      </a>
+
+      <!-- Buscador global -->
+      <div
+        id="header-search"
+        class="group ml-1 flex h-10 min-w-0 max-w-[520px] flex-1 items-center gap-2 rounded-full border border-white/10 bg-white/[0.08] px-3 text-sm transition hover:border-white/20 hover:bg-white/[0.12] focus-within:border-white/60 focus-within:bg-white/[0.12]"
+      >
+        <span class="shrink-0 text-[18px] text-subtle group-focus-within:text-white" data-icon="search"></span>
+        <input
+          id="global-search"
+          type="search"
+          autocomplete="off"
+          placeholder="¿Qué quieres escuchar?"
+          aria-label="Buscar en Spotify"
+          class="min-w-0 flex-1 bg-transparent font-medium text-white placeholder:text-subtle focus:outline-none"
+        />
+        <kbd
+          class="hidden shrink-0 rounded border border-white/15 bg-black/30 px-1.5 py-0.5 text-[10px] font-bold text-subtle lg:block"
+          >Ctrl K</kbd
+        >
+      </div>
+
+      <div class="ml-auto flex shrink-0 items-center gap-2 md:gap-3">
+        <a
+          id="btn-premium"
+          href="#/premium"
+          class="hidden rounded-full border border-white/30 px-4 py-2 text-sm font-bold text-white transition hover:scale-105 hover:border-white md:block"
+        >
+          Explorar Premium
+        </a>
+        <button
+          id="btn-install"
+          class="hidden h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white/80 transition hover:text-white md:flex"
+          aria-label="Instalar aplicación"
+          title="Instalar aplicación"
+        >
+          <span class="block text-[18px]" data-icon="download"></span>
+        </button>
+        <div class="relative">
+          <button
+            class="hidden h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white/80 transition hover:text-white md:flex"
+            id="btn-notif"
+            aria-label="Notificaciones"
+            aria-haspopup="menu"
+            title="Notificaciones"
+          >
+            <span class="block text-[18px]" data-icon="bell"></span>
+            <span
+              id="notif-dot"
+              class="absolute right-1 top-1 block h-2 w-2 rounded-full bg-spotify ring-2 ring-black"
+            ></span>
+          </button>
+          <div
+            id="notif-panel"
+            class="absolute right-0 top-11 z-50 hidden w-80 overflow-hidden rounded-lg bg-elevated p-2 shadow-2xl"
+            role="menu"
+          ></div>
+        </div>
+
+        <!-- Profile -->
+        <div id="profile-wrap" class="relative">
+          <button
+            id="profile-btn"
+            class="flex h-9 items-center gap-0 rounded-full bg-black/70 p-0.5 pr-1.5 text-[14px] font-bold text-white transition hover:bg-black"
+            aria-haspopup="menu"
+            aria-label="Menú de perfil"
+          >
+            <span
+              id="profile-avatar"
+              class="flex h-8 w-8 items-center justify-center rounded-full bg-cover bg-center text-sm text-white"
+              style="background-image: linear-gradient(135deg, #ff512f 0%, #dd2476 100%)"
+            >
+              MP</span
+            >
+            <span class="ml-1.5 hidden text-subtle md:inline" data-icon="chevron-down"></span>
+          </button>
+          <div
+            id="profile-menu"
+            class="absolute right-0 top-11 z-50 hidden w-64 overflow-hidden rounded-lg bg-elevated p-1.5 shadow-2xl"
+            role="menu"
+          >
+            <div class="px-3 py-2.5">
+              <p id="profile-menu-name" class="truncate text-sm font-bold text-white">Matyaz Paredes</p>
+              <p id="profile-menu-plan" class="mt-0.5 flex items-center gap-1 text-xs text-subtle">
+                Plan Free
+              </p>
+            </div>
+            <hr class="my-1 border-white/10" />
+            <button
+              class="menu-row"
+              role="menuitem"
+              data-link="#/account"
+            >
+              <span class="text-[16px]" data-icon="user"></span> Cuenta
+            </button>
+            <button
+              class="menu-row"
+              role="menuitem"
+              data-link="#/account"
+            >
+              <span class="text-[16px]" data-icon="settings"></span> Perfil y ajustes
+            </button>
+            <button
+              class="menu-row"
+              role="menuitem"
+              data-link="#/premium"
+            >
+              <span class="text-[16px]" data-icon="premium"></span> Planes Premium
+            </button>
+            <hr class="my-1 border-white/10" />
+            <button
+              class="menu-row"
+              role="menuitem"
+              data-action="logout"
+            >
+              <span class="text-[16px]" data-icon="logout"></span> Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- =========================================================== -->
+    <!-- App shell: sidebar de biblioteca + main                      -->
+    <!-- =========================================================== -->
+    <div class="flex min-h-0 flex-1 gap-2 p-2 pb-0">
+      <!-- ============ SIDEBAR ============ -->
+      <aside
+        id="sidebar"
+        class="hidden w-[300px] shrink-0 flex-col transition-[width] duration-300 lg:flex"
+        aria-label="Barra lateral"
+      >
+        <!-- Library box -->
+        <div
+          id="sidebar-library"
+          class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-ink"
+        >
+          <div class="flex items-center gap-1 px-4 pt-4">
+            <button
+              id="lib-collapse-btn"
+              data-nav="library"
+              class="flex items-center gap-3 rounded-md px-2 py-1 text-[15px] font-bold text-subtle transition-colors hover:text-white"
+              title="Contraer barra lateral"
+              aria-label="Contraer barra lateral"
+            >
+              <span class="text-[24px]" data-icon="library"></span>
+              <span class="sidebar-word" id="lib-title">Tu biblioteca</span>
+              <span class="sidebar-word ml-0.5 text-subtle" data-icon="collapse"></span>
+            </button>
+            <div class="sidebar-word ml-auto flex items-center gap-1">
+              <button
+                id="lib-search"
+                class="rounded-full p-2 text-subtle transition-colors hover:bg-white/10 hover:text-white"
+                title="Buscar en tu biblioteca"
+                aria-label="Buscar en tu biblioteca"
+              >
+                <span class="block text-[18px]" data-icon="search"></span>
+              </button>
+              <button
+                id="lib-create"
+                class="rounded-full p-2 text-subtle transition-colors hover:bg-white/10 hover:text-white"
+                title="Crear playlist"
+                aria-label="Crear playlist"
+              >
+                <span class="block text-[18px]" data-icon="plus"></span>
+              </button>
+            </div>
+          </div>
+
+          <div id="lib-search-wrap" class="sidebar-word hidden px-5 pt-3">
+            <div class="flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5">
+              <span class="text-[15px] text-subtle" data-icon="search"></span>
+              <input
+                id="lib-search-input"
+                type="search"
+                placeholder="Buscar en tu biblioteca"
+                class="min-w-0 flex-1 bg-transparent text-xs text-white placeholder:text-subtle focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div class="sidebar-word flex flex-wrap gap-2 px-5 pt-3">
+            <button
+              class="lib-chip rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/20"
+              data-lib-filter="all"
+              type="button"
+            >
+              Todas
+            </button>
+            <button
+              class="lib-chip rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/20"
+              data-lib-filter="playlist"
+              type="button"
+            >
+              Playlists
+            </button>
+            <button
+              class="lib-chip rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/20"
+              data-lib-filter="album"
+              type="button"
+            >
+              Álbumes
+            </button>
+            <button
+              class="lib-chip rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/20"
+              data-lib-filter="artist"
+              type="button"
+            >
+              Artistas
+            </button>
+          </div>
+
+          <!-- Scrollable library content -->
+          <div
+            id="sidebar-library-list"
+            class="scroll-area mt-4 flex-1 space-y-1 overflow-y-auto px-2 pb-6"
+          ></div>
+        </div>
+      </aside>
+
+      <!-- ============ MAIN ============ -->
+      <main class="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-base">
+        <!-- View container (rendered by JS) -->
+        <div id="view" class="scroll-area flex-1 overflow-y-auto anim-fade">
+          <!-- injected -->
+        </div>
+      </main>
+    </div>
+
+    <!-- =========================================================== -->
+    <!-- Player (desktop / tablet)                                    -->
+    <!-- =========================================================== -->
+    <footer
+      id="player-bar"
+      class="hidden h-[90px] shrink-0 items-center border-t border-white/10 bg-ink px-4 lg:flex"
+      aria-label="Reproductor"
+    >
+      <!-- Track info -->
+      <div class="flex min-w-0 w-[30%] items-center gap-3">
+        <button id="player-track-cover" class="group relative h-14 w-14 shrink-0" aria-label="Ver álbum">
+          <span
+            class="block h-14 w-14 rounded bg-cover bg-center shadow-lg transition group-hover:opacity-80"
+            id="player-cover"
+            data-grad="ep1"
+          ></span>
+          <span
+            class="absolute inset-0 hidden items-center justify-center text-white/90 group-hover:flex"
+            id="player-cover-overlay"
+            ><span class="block text-[18px]" data-icon="expand"></span
+          ></span>
+        </button>
+        <div class="min-w-0 leading-tight">
+          <button
+            id="player-title"
+            class="clamp-1 block max-w-full text-left text-sm font-bold hover:underline"
+            type="button"
+          >
+            Título de la canción
+          </button>
+          <button
+            id="player-artist"
+            class="clamp-1 block max-w-full text-left text-xs text-subtle hover:text-white hover:underline"
+            type="button"
+          >
+            Artista
+          </button>
+        </div>
+        <button
+          id="player-like"
+          class="ml-1 hidden text-faint transition hover:scale-110 hover:text-white sm:block"
+          aria-label="Me gusta"
+        >
+          <span class="block text-[16px] text-[#1db954]" data-icon="heart"></span>
+        </button>
+      </div>
+
+      <!-- Center controls -->
+      <div class="flex flex-1 flex-col items-center justify-center gap-1.5 px-4">
+        <div class="flex items-center gap-4 md:gap-5">
+          <button
+            id="player-shuffle"
+            class="text-faint transition hover:text-white"
+            aria-label="Aleatorio"
+            title="Aleatorio"
+          >
+            <span class="block text-[15px]" data-icon="shuffle"></span>
+          </button>
+          <button id="player-prev" class="text-white transition hover:scale-110" aria-label="Anterior">
+            <span class="block text-[18px]" data-icon="prev"></span>
+          </button>
+          <button
+            id="player-play"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition hover:scale-107"
+            aria-label="Reproducir"
+          >
+            <span class="ml-0.5 flex h-5 w-5 items-center justify-center text-[20px]" data-icon="play"></span>
+          </button>
+          <button id="player-next" class="text-white transition hover:scale-110" aria-label="Siguiente">
+            <span class="flex h-5 w-5 items-center justify-center text-[18px]" data-icon="next"></span>
+          </button>
+          <button
+            id="player-repeat"
+            class="text-faint transition hover:text-white"
+            aria-label="Repetir"
+            title="Repetir"
+          >
+            <span class="block text-[15px]" data-icon="repeat"></span>
+          </button>
+        </div>
+        <div class="flex w-full max-w-xl items-center gap-2">
+          <span id="player-time" class="w-9 text-right text-[11px] tabular-nums text-subtle">0:00</span>
+          <input
+            id="player-progress"
+            class="slider flex-1"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="0"
+            aria-label="Progreso de reproducción"
+          />
+          <span id="player-duration" class="w-9 text-[11px] tabular-nums text-subtle">0:00</span>
+        </div>
+      </div>
+
+      <!-- Right tools -->
+      <div class="flex w-[30%] items-center justify-end gap-1">
+        <button
+          id="player-queue"
+          class="tool-btn"
+          aria-label="Cola de reproducción"
+          title="Cola de reproducción"
+        >
+          <span class="block text-[18px]" data-icon="queue"></span>
+        </button>
+        <button id="player-devices" class="tool-btn" aria-label="Conectar dispositivo" title="Conectar dispositivo">
+          <span class="block text-[18px]" data-icon="devices"></span>
+        </button>
+        <button id="player-mute" class="tool-btn" aria-label="Silenciar" title="Silenciar">
+          <span class="block text-[18px]" data-icon="volume"></span>
+        </button>
+        <input
+          id="player-volume"
+          class="slider volume ml-1 hidden w-24 sm:block"
+          type="range"
+          min="0"
+          max="100"
+          value="70"
+          aria-label="Volumen"
+        />
+      </div>
+    </footer>
+
+    <!-- =========================================================== -->
+    <!-- MINI PLAYER (mobile)                                         -->
+    <!-- =========================================================== -->
+    <div
+      id="mini-player"
+      class="relative flex h-16 shrink-0 items-center gap-3 border-b border-white/10 bg-highlight px-3 lg:hidden"
+      role="button"
+      tabindex="0"
+      aria-label="Abrir reproductor"
+    >
+      <span class="absolute inset-x-0 top-0 h-0.5 bg-white/10">
+        <span id="mini-progress" class="block h-full w-0 bg-spotify transition-[width] duration-200"></span>
+      </span>
+      <span
+        id="mini-cover"
+        class="block h-12 w-12 shrink-0 rounded bg-cover bg-center shadow"
+        data-grad="ep1"
+      ></span>
+      <span class="min-w-0 flex-1 text-left leading-tight">
+        <span id="mini-title" class="clamp-1 block text-sm font-bold text-white">Título de la canción</span>
+        <span id="mini-artist" class="clamp-1 block text-xs text-subtle">Artista</span>
+      </span>
+      <button id="mini-play-ic" class="shrink-0 rounded-full p-2 text-white hover:bg-white/10" aria-label="Reproducir o pausar">
+        <span class="flex h-6 w-6 items-center justify-center text-[22px]" data-icon="play"></span>
+      </button>
+    </div>
+
+    <!-- =========================================================== -->
+    <!-- BOTTOM NAV (mobile)                                          -->
+    <!-- =========================================================== -->
+    <nav
+      id="bottom-nav"
+      class="grid shrink-0 grid-cols-4 gap-1 bg-ink p-2 pb-3 pt-1 lg:hidden"
+      aria-label="Navegación móvil"
+    >
+      <a
+        href="#/"
+        data-nav2="home"
+        class="flex flex-col items-center gap-0.5 rounded-md py-1 text-[11px] font-bold text-subtle"
+      >
+        <span class="text-[22px]" data-icon="home"></span> Inicio
+      </a>
+      <a
+        href="#/search"
+        data-nav2="search"
+        class="flex flex-col items-center gap-0.5 rounded-md py-1 text-[11px] font-bold text-subtle"
+      >
+        <span class="text-[22px]" data-icon="search"></span> Buscar
+      </a>
+      <a
+        href="#/library"
+        data-nav2="library"
+        class="flex flex-col items-center gap-0.5 rounded-md py-1 text-[11px] font-bold text-subtle"
+      >
+        <span class="text-[22px]" data-icon="library"></span> Biblioteca
+      </a>
+      <a
+        href="#/premium"
+        data-nav2="premium"
+        class="flex flex-col items-center gap-0.5 rounded-md py-1 text-[11px] font-bold text-subtle"
+      >
+        <span class="text-[22px]" data-icon="premium"></span> Premium
+      </a>
+    </nav>
+
+    <!-- =========================================================== -->
+    <!-- NOW PLAYING (mobile full screen)                             -->
+    <!-- =========================================================== -->
+    <div
+      id="now-playing"
+      class="fixed inset-0 z-50 hidden flex-col bg-gradient-to-b from-[#232323] via-ink to-ink lg:hidden"
+      aria-hidden="true"
+    >
+      <div class="flex items-center justify-between px-5 pt-5">
+        <button id="now-close" class="text-white" aria-label="Cerrar reproductor">
+          <span class="block text-[20px]" data-icon="chevron-down"></span>
+        </button>
+        <div class="text-center">
+          <p class="text-[11px] font-semibold uppercase tracking-widest text-subtle">Reproduciendo desde</p>
+          <p id="now-context" class="clamp-1 max-w-[180px] text-sm font-bold">Playlist</p>
+        </div>
+        <button id="now-more" class="text-white" aria-label="Más opciones">
+          <span class="block text-[20px]" data-icon="more"></span>
+        </button>
+      </div>
+
+      <div class="flex flex-1 flex-col justify-center overflow-hidden px-6 py-4">
+        <div class="flex flex-1 items-center justify-center">
+          <span
+            id="now-cover"
+            class="now-cover block aspect-square w-full max-w-sm rounded-lg bg-cover bg-center shadow-2xl"
+            data-grad="ep1"
+          ></span>
+        </div>
+        <div class="mt-6 flex items-end justify-between gap-3">
+          <div class="min-w-0">
+            <h2 id="now-title" class="clamp-1 text-xl font-black">Título</h2>
+            <p id="now-artist" class="clamp-1 text-sm text-subtle">Artista</p>
+          </div>
+          <button id="now-like" class="text-[#1db954]" aria-label="Me gusta">
+            <span class="block text-[20px] text-[#1db954]" data-icon="heart"></span>
+          </button>
+        </div>
+
+        <div class="mt-3 flex w-full max-w-xl items-center gap-2 self-center">
+          <span id="now-time" class="w-9 text-right text-[11px] tabular-nums text-subtle">0:00</span>
+          <input
+            id="now-progress"
+            class="slider flex-1"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="0"
+            aria-label="Progreso de reproducción"
+          />
+          <span id="now-duration" class="w-9 text-[11px] tabular-nums text-subtle">0:00</span>
+        </div>
+
+        <div class="mt-2 flex w-full max-w-xl items-center justify-between gap-3 self-center">
+          <span class="text-faint" data-icon="devices"></span>
+          <div class="flex items-center gap-6">
+            <button id="now-shuffle" class="text-[20px] text-white" aria-label="Aleatorio">
+              <span data-icon="shuffle"></span>
+            </button>
+            <button id="now-prev" class="text-[24px] text-white" aria-label="Anterior">
+              <span class="flex h-6 w-6 items-center justify-center" data-icon="prev"></span>
+            </button>
+            <button
+              id="now-play"
+              class="flex h-16 w-16 items-center justify-center rounded-full bg-white text-black"
+              aria-label="Reproducir / Pausar"
+            >
+              <span class="ml-1 flex h-8 w-8 items-center justify-center text-[28px]" data-icon="play"></span>
+            </button>
+            <button id="now-next" class="text-[24px] text-white" aria-label="Siguiente">
+              <span class="flex h-6 w-6 items-center justify-center" data-icon="next"></span>
+            </button>
+            <button id="now-repeat" class="text-[20px] text-white" aria-label="Repetir">
+              <span data-icon="repeat"></span>
+            </button>
+          </div>
+          <button id="now-queue" class="text-faint" aria-label="Cola de reproducción">
+            <span data-icon="queue"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================== -->
+    <!-- QUEUE / LYRICS DRAWER                                        -->
+    <!-- =========================================================== -->
+    <aside
+      id="queue-panel"
+      class="fixed right-0 top-0 bottom-[120px] z-[55] flex w-full max-w-[380px] translate-x-full flex-col border-l border-white/10 bg-[#121212] shadow-2xl transition-transform duration-300 lg:bottom-[90px]"
+      aria-label="Cola de reproducción"
+      aria-hidden="true"
+    >
+      <div class="flex items-center justify-between px-4 pb-2 pt-4">
+        <h2 class="text-[16px] font-black">Reproduciendo ahora</h2>
+        <button id="queue-close" class="rounded-full p-2 text-subtle hover:bg-white/10 hover:text-white" aria-label="Cerrar cola">
+          <span class="block text-[18px]" data-icon="close"></span>
+        </button>
+      </div>
+      <div class="flex gap-2 px-4 pb-3">
+        <button
+          data-queue-tab="queue"
+          class="queue-tab rounded-full bg-white px-3 py-1 text-xs font-bold text-black"
+        >
+          Cola
+        </button>
+        <button
+          data-queue-tab="lyrics"
+          class="queue-tab rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white hover:bg-white/20"
+        >
+          Letra
+        </button>
+      </div>
+      <div id="queue-content" class="scroll-area flex-1 overflow-y-auto px-2 pb-6"></div>
+    </aside>
+
+    <!-- =========================================================== -->
+    <!-- Modal root                                                   -->
+    <!-- =========================================================== -->
+    <div
+      id="modal-root"
+      class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+    >
+      <div id="modal-card" class="anim-modal max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-[#282828] p-6 shadow-2xl"></div>
+    </div>
+
+    <!-- =========================================================== -->
+    <!-- Context menu (right click)                                   -->
+    <!-- =========================================================== -->
+    <div
+      id="context-menu"
+      class="fixed z-[60] hidden w-64 overflow-hidden rounded-lg bg-elevated p-1.5 shadow-2xl"
+      role="menu"
+    ></div>
+
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="pointer-events-none fixed left-1/2 top-20 z-[90] -translate-x-1/2 rounded-md bg-spotify px-4 py-3 text-sm font-bold text-black opacity-0 shadow-xl transition-opacity duration-300"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+    <!-- JS -->
+    <script src="assets/js/icons.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/audio.js?v=2"></script>
+    <script src="assets/js/cards.js"></script>
+    <script src="assets/js/views.js"></script>
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>

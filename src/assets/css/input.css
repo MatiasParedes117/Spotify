@@ -1,0 +1,543 @@
+@import "tailwindcss";
+
+@theme {
+  --color-spotify: #1db954;
+  --color-spotify-hover: #1ed760;
+  --color-spotify-active: #169c46;
+  --color-ink: #000000;
+  --color-base: #121212;
+  --color-highlight: #1a1a1a;
+  --color-elevated: #242424;
+  --color-highlight2: #2a2a2a;
+  --color-subtle: #b3b3b3;
+  --color-faint: #7c7c7c;
+  --color-line: #282828;
+
+  --font-sans: "Circular", "Montserrat", "Poppins", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ---------- Base ---------- */
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--color-ink);
+    color: #fff;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    user-select: none;
+  }
+}
+
+/* ---------- Scrollbars ---------- */
+
+.scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: #5a5a5a transparent;
+}
+
+.scroll-area::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scroll-area::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+  min-height: 40px;
+}
+
+.scroll-area::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
+/* ---------- Ranges (progress + volume) ---------- */
+
+input[type="range"].slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  background: transparent;
+  cursor: pointer;
+  --fill: 0%;
+  --track: #4d4d4d;
+}
+
+input[type="range"].slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+      to right,
+      #fff var(--fill),
+      var(--track) var(--fill)
+    );
+}
+
+input[type="range"].slider:hover::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+      to right,
+      var(--color-spotify) var(--fill),
+      var(--track) var(--fill)
+    );
+}
+
+input[type="range"].slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 120ms;
+}
+
+input[type="range"].slider:hover::-webkit-slider-thumb,
+input[type="range"].slider:active::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+input[type="range"].slider::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--track);
+}
+
+input[type="range"].slider::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+input[type="range"].slider:hover::-moz-range-progress {
+  background: var(--color-spotify);
+}
+
+input[type="range"].slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 120ms;
+}
+
+input[type="range"].slider:hover::-moz-range-thumb,
+input[type="range"].slider:active::-moz-range-thumb {
+  opacity: 1;
+}
+
+input[type="range"].volume {
+  /* darker track, thinner */
+}
+
+input[type="range"].volume::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+      to right,
+      #fff var(--fill),
+      #4d4d4d var(--fill)
+    );
+}
+
+input[type="range"].volume:hover::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+      to right,
+      var(--color-spotify) var(--fill),
+      #4d4d4d var(--fill)
+    );
+}
+
+/* ---------- Card play button ---------- */
+
+.card-play {
+  transform: translateY(8px);
+  opacity: 0;
+  transition:
+    transform 300ms cubic-bezier(0.2, 0, 0, 1),
+    opacity 300ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.card:hover .card-play,
+.card:focus-within .card-play {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.group\/card:hover .card-play,
+.group\/card:focus-within .card-play {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .card-play {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ---------- Animations ---------- */
+
+@keyframes kf-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes kf-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kf-player-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes kf-eq {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.anim-fade-up {
+  animation: kf-fade-up 360ms ease both;
+}
+
+.anim-fade {
+  animation: kf-fade 300ms ease both;
+}
+
+.anim-player-up {
+  animation: kf-player-up 320ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* ---------- Equalizer bars ---------- */
+
+.eq-bar {
+  width: 3px;
+  border-radius: 999px;
+  background: var(--color-spotify);
+  transform-origin: bottom;
+  animation: kf-eq 0.9s ease-in-out infinite;
+}
+
+.eq-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.eq-bar:nth-child(2) {
+  animation-delay: 0.25s;
+}
+.eq-bar:nth-child(3) {
+  animation-delay: 0.5s;
+}
+.eq-bar:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+/* ---------- Line clamp helpers ---------- */
+
+.clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---------- Library playlist icon tile ---------- */
+
+.lib-tile {
+  background: linear-gradient(135deg, #444 0%, #1f1f1f 100%);
+}
+
+/* ---------- Hidden utility for JS ---------- */
+
+.hidden-util {
+  display: none !important;
+}
+
+/* ---------- Sidebar collapse (desktop) ---------- */
+
+#sidebar.collapsed {
+  padding-inline: 0.75rem;
+}
+
+#sidebar.collapsed .nav-text,
+#sidebar.collapsed .lib-head,
+#sidebar.collapsed .sidebar-library {
+  display: none;
+}
+/* ---------- Header con blur al hacer scroll ---------- */
+
+.app-header {
+  background: #000;
+  transition: background-color 220ms ease;
+}
+
+.app-header.scrolled {
+  background: #000;
+}
+
+/* ---------- Player tools ---------- */
+
+.tool-btn {
+  display: inline-flex;
+  height: 32px;
+  width: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: var(--color-subtle);
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.tool-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.06);
+}
+
+/* ---------- Filas del menú de perfil ---------- */
+
+.menu-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.65rem;
+  white-space: nowrap;
+  border-radius: 0.375rem;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  transition: background-color 140ms ease;
+}
+
+.menu-row:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* ---------- Switch (preferencias de cuenta) ---------- */
+
+.switch {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 22px;
+  border: none;
+  border-radius: 9999px;
+  background: #4d4d4d;
+  cursor: pointer;
+  transition: background-color 180ms ease;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.switch:checked {
+  background: var(--color-spotify);
+}
+
+.switch:checked::after {
+  transform: translateX(18px);
+}
+
+.switch:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ---------- Tarjetas de género ---------- */
+
+.genre-card {
+  isolation: isolate;
+  transition:
+    transform 220ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 220ms ease;
+}
+
+.genre-card:hover {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.9);
+}
+
+/* ---------- Modal ---------- */
+
+@keyframes kf-modal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.anim-modal {
+  animation: kf-modal 220ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* ---------- Premium hero ---------- */
+
+.premium-hero {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(29, 185, 84, 0.45), transparent 42%),
+    radial-gradient(circle at 82% 0%, rgba(80, 155, 245, 0.28), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(225, 0, 255, 0.12), transparent 55%),
+    linear-gradient(165deg, #191919 0%, #0a0a0a 100%);
+}
+
+/* ---------- Now playing glow ---------- */
+
+.now-cover {
+  box-shadow:
+    0 30px 70px -20px rgba(0, 0, 0, 0.9),
+    0 0 80px -30px rgba(29, 185, 84, 0.35);
+}
+
+/* ---------- Detalles ---------- */
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+.track-active {
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.track-active .idx-num {
+  color: var(--color-spotify);
+}
+
+/* ---------- Sidebar colapsada ---------- */
+
+#sidebar.collapsed {
+  width: 72px !important;
+}
+
+#sidebar.collapsed .sidebar-word {
+  display: none !important;
+}
+
+#sidebar.collapsed nav {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+#sidebar.collapsed .nav-item,
+#sidebar.collapsed #lib-collapse-btn {
+  justify-content: center;
+  gap: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+#sidebar.collapsed .nav-item:hover,
+#sidebar.collapsed #lib-collapse-btn:hover {
+  color: #fff;
+}
+
+/* ---------- Scroll horizontal sin barra visible ---------- */
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Utilidades varias ---------- */
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Ocultar botón nativo de limpiar búsqueda ---------- */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
